@@ -2,11 +2,10 @@ import React, { useState, useMemo } from 'react';
 import { FaSearch, FaFilePdf, FaCloudDownloadAlt, FaCalendarDay, FaFingerprint, FaFilter, FaBalanceScale, FaFileContract, FaGavel } from 'react-icons/fa';
 
 // --- 1. MOCK DATA (Simulating API Response) ---
-// Flat structure is better for filtering than nested categories
 const RAW_DOCUMENTS = [
     {
         id: 1,
-        type: 'law', // law | decree | decision
+        type: 'law',
         title: "\"Davlat fuqarolik xizmati to'g'risida\"gi O'zbekiston Respublikasi Qonuni",
         description: "Davlat fuqarolik xizmati sohasidagi munosabatlarni tartibga soluvchi fundamental qonun hujjati.",
         date: "08.08.2022",
@@ -59,7 +58,6 @@ const CATEGORIES = [
     { id: 'decision', label: 'Hukumat Qarorlari', icon: <FaGavel /> },
 ];
 
-// Dynamic Styling Strategy
 const getTypeStyles = (type) => {
     switch (type) {
         case 'law': return { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-200', gradient: 'from-blue-500', icon: <FaBalanceScale /> };
@@ -75,19 +73,14 @@ const DocumentCard = ({ doc }) => {
 
     return (
         <div className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-transparent hover:ring-4 hover:ring-blue-500/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
-            {/* Semantic Top Line */}
             <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${style.gradient} to-transparent`}></div>
 
             <div className="flex flex-col md:flex-row gap-6 items-start h-full">
-                
-                {/* Icon Box */}
                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shrink-0 ${style.bg} ${style.text} group-hover:scale-110 transition-transform duration-300`}>
                     {style.icon}
                 </div>
 
-                {/* Content */}
                 <div className="flex-grow space-y-3 flex flex-col h-full">
-                    {/* Meta Tags */}
                     <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-md ${style.bg} ${style.text}`}>
                             {CATEGORIES.find(c => c.id === doc.type)?.label || 'Hujjat'}
@@ -102,17 +95,16 @@ const DocumentCard = ({ doc }) => {
                     <h3 className="text-lg font-bold text-slate-800 leading-snug group-hover:text-blue-600 transition-colors">
                         {doc.title}
                     </h3>
-                    
+
                     <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed flex-grow">
                         {doc.description}
                     </p>
 
-                    {/* Footer Actions */}
                     <div className="pt-4 flex items-center justify-between border-t border-gray-50 mt-auto">
                         <div className="flex items-center gap-2 text-xs font-semibold text-gray-400">
                             <FaFilePdf className="text-red-500 text-base" /> PDF, {doc.size}
                         </div>
-                        
+
                         <button className="flex items-center gap-2 bg-slate-50 hover:bg-blue-600 hover:text-white text-slate-600 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-blue-500/30">
                             <FaCloudDownloadAlt /> <span className="hidden sm:inline">Yuklab olish</span>
                         </button>
@@ -128,12 +120,11 @@ const Documents = () => {
     const [activeTab, setActiveTab] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
 
-    // --- 10x Performance Logic: Memoized Filtering ---
     const filteredDocs = useMemo(() => {
         return RAW_DOCUMENTS.filter(doc => {
             const matchesCategory = activeTab === 'all' || doc.type === activeTab;
-            const matchesSearch = doc.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                  doc.number.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesSearch = doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                doc.number.toLowerCase().includes(searchQuery.toLowerCase());
             return matchesCategory && matchesSearch;
         });
     }, [activeTab, searchQuery]);
@@ -141,7 +132,7 @@ const Documents = () => {
     return (
         <div className="bg-[#F8FAFC] min-h-screen py-16 font-sans">
             <div className="container mx-auto px-4 max-w-5xl">
-                
+
                 {/* HEADER */}
                 <div className="text-center mb-12 animate-fade-in-up">
                     <span className="text-blue-600 font-bold tracking-widest uppercase text-xs bg-blue-50 px-3 py-1 rounded-full mb-4 inline-block">
@@ -159,27 +150,25 @@ const Documents = () => {
                 <div className="sticky top-4 z-30 mb-8">
                     <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/20 p-2 ring-1 ring-black/5">
                         <div className="flex flex-col md:flex-row gap-4 justify-between items-center p-2">
-                            
-                            {/* Tabs (Scrollable on mobile) */}
+
                             <div className="flex gap-1 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 custom-scrollbar mask-gradient">
                                 {CATEGORIES.map(cat => (
                                     <button
                                         key={cat.id}
                                         onClick={() => setActiveTab(cat.id)}
                                         className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap select-none
-                                        ${activeTab === cat.id 
-                                            ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' 
-                                            : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}`}
+                                        ${activeTab === cat.id
+                                                ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20'
+                                                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}`}
                                     >
                                         {cat.icon} {cat.label}
                                     </button>
                                 ))}
                             </div>
 
-                            {/* Search Input */}
                             <div className="relative w-full md:w-80 group">
                                 <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
-                                <input 
+                                <input
                                     type="text"
                                     placeholder="Nomi yoki raqami bo'yicha qidirish..."
                                     value={searchQuery}
@@ -200,7 +189,6 @@ const Documents = () => {
                             </div>
                         ))
                     ) : (
-                        // Empty State (UX Care)
                         <div className="text-center py-24 bg-white rounded-[2rem] border border-dashed border-slate-200">
                             <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300">
                                 <FaFilter size={32} />
@@ -209,8 +197,8 @@ const Documents = () => {
                             <p className="text-slate-500 text-sm max-w-xs mx-auto mb-6">
                                 "{searchQuery}" bo'yicha hech narsa topilmadi. So'rovni o'zgartirib ko'ring yoki filtrlarni tozalang.
                             </p>
-                            <button 
-                                onClick={() => {setSearchQuery(''); setActiveTab('all')}}
+                            <button
+                                onClick={() => { setSearchQuery(''); setActiveTab('all') }}
                                 className="text-blue-600 font-bold text-sm hover:underline bg-blue-50 px-6 py-2 rounded-lg"
                             >
                                 Filtrlarni tozalash
@@ -221,9 +209,9 @@ const Documents = () => {
 
                 {/* FOOTER NOTE */}
                 <div className="mt-12 text-center border-t border-slate-200 pt-8">
-                     <p className="text-xs text-slate-400 font-medium">
-                         Barcha hujjatlar "Lex.uz" milliy qonunchilik bazasi bilan avtomatik sinxronizatsiya qilingan.
-                     </p>
+                    <p className="text-xs text-slate-400 font-medium">
+                        Barcha hujjatlar "Lex.uz" milliy qonunchilik bazasi bilan avtomatik sinxronizatsiya qilingan.
+                    </p>
                 </div>
 
             </div>

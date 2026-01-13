@@ -25,7 +25,7 @@ const useScrollProgress = () => {
 // --- 2. COMPONENTS ---
 
 const ShareButton = ({ icon, colorClass, onClick }) => (
-    <button 
+    <button
         onClick={onClick}
         className={`w-10 h-10 rounded-full border border-gray-100 bg-white flex items-center justify-center text-gray-500 transition-all duration-300 hover:scale-110 hover:shadow-lg ${colorClass}`}
     >
@@ -35,21 +35,21 @@ const ShareButton = ({ icon, colorClass, onClick }) => (
 
 const ArticleContent = ({ htmlContent }) => (
     // Tailwind Typography plugin (prose) is essential for rich text
-    <div 
+    <div
         className="prose prose-lg prose-slate max-w-none 
         prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-slate-900 
         prose-p:leading-relaxed prose-p:text-slate-600 
         prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
         prose-strong:text-slate-800 prose-strong:font-bold
         prose-li:marker:text-blue-500"
-        dangerouslySetInnerHTML={{ __html: htmlContent }} 
+        dangerouslySetInnerHTML={{ __html: htmlContent }}
     />
 );
 
 // --- 3. MAIN PAGE ---
 
 const NewsDetail = () => {
-    const { id } = useParams();
+    useParams();
     const progress = useScrollProgress();
 
     // MOCK DATA (Rich Structure)
@@ -91,10 +91,10 @@ const NewsDetail = () => {
 
     return (
         <div className="bg-white min-h-screen font-sans selection:bg-blue-100 selection:text-blue-900">
-            
+
             {/* 1. SCROLL PROGRESS BAR (Sticky Top) */}
             <div className="fixed top-0 left-0 w-full h-1 z-50 bg-gray-100">
-                <div 
+                <div
                     className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-150 ease-out"
                     style={{ width: `${progress}%` }}
                 ></div>
@@ -103,7 +103,7 @@ const NewsDetail = () => {
             {/* 2. HEADER & HERO */}
             <div className="bg-[#F8FAFC] pb-12 pt-24 border-b border-gray-200">
                 <div className="container mx-auto px-4 max-w-4xl">
-                    
+
                     {/* Breadcrumb / Back */}
                     <Link to="/news" className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition mb-8 group">
                         <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" /> Yangiliklarga qaytish
@@ -143,15 +143,15 @@ const NewsDetail = () => {
             {/* 3. CONTENT AREA */}
             <div className="container mx-auto px-4 max-w-7xl -mt-10 pb-20 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                    
+
                     {/* LEFT: Sticky Actions (Desktop) */}
                     <div className="hidden lg:block lg:col-span-1">
                         <div className="sticky top-32 flex flex-col gap-4 items-center">
-                            <ShareButton icon={<FaFacebookF />} colorClass="hover:text-blue-600 hover:border-blue-200" onClick={() => {}} />
-                            <ShareButton icon={<FaTelegramPlane />} colorClass="hover:text-sky-500 hover:border-sky-200" onClick={() => {}} />
-                            <ShareButton icon={<FaTwitter />} colorClass="hover:text-blue-400 hover:border-blue-200" onClick={() => {}} />
+                            <ShareButton icon={<FaFacebookF />} colorClass="hover:text-blue-600 hover:border-blue-200" onClick={() => { }} />
+                            <ShareButton icon={<FaTelegramPlane />} colorClass="hover:text-sky-500 hover:border-sky-200" onClick={() => { }} />
+                            <ShareButton icon={<FaTwitter />} colorClass="hover:text-blue-400 hover:border-blue-200" onClick={() => { }} />
                             <div className="w-8 h-px bg-gray-200 my-2"></div>
-                            <ShareButton icon={<FaLink />} colorClass="hover:text-slate-900 hover:border-slate-300" onClick={() => {}} />
+                            <ShareButton icon={<FaLink />} colorClass="hover:text-slate-900 hover:border-slate-300" onClick={() => { }} />
                         </div>
                     </div>
 

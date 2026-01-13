@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FaUser, FaPhoneAlt, FaEnvelope, FaPaperPlane, FaFileAlt, FaCheckCircle, FaInfoCircle, FaSpinner, FaShieldAlt } from 'react-icons/fa';
 
 // --- 1. ATOMIC UI COMPONENTS (Design System) ---
@@ -13,12 +13,12 @@ const InputField = ({ label, icon, type = "text", error, ...props }) => (
                 {icon}
             </div>
             {type === 'textarea' ? (
-                <textarea 
+                <textarea
                     className="w-full pl-11 pr-4 py-3 bg-gray-50 border-2 border-transparent rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-blue-500/30 focus:shadow-[0_0_0_4px_rgba(59,130,246,0.1)] transition-all resize-none"
                     {...props}
                 />
             ) : (
-                <input 
+                <input
                     type={type}
                     className="w-full pl-11 pr-4 py-3 bg-gray-50 border-2 border-transparent rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-blue-500/30 focus:shadow-[0_0_0_4px_rgba(59,130,246,0.1)] transition-all"
                     {...props}
@@ -35,7 +35,7 @@ const Appeals = () => {
     // State Machine Pattern
     const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success'
     const [ticketId, setTicketId] = useState(null);
-    
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -67,7 +67,7 @@ const Appeals = () => {
 
         // Simulate API latency & processing
         await new Promise(resolve => setTimeout(resolve, 2000));
-        
+
         // Generate Fake ID for UX Trust
         const randomId = Math.floor(10000 + Math.random() * 90000);
         setTicketId(randomId);
@@ -91,7 +91,7 @@ const Appeals = () => {
                     <p className="text-gray-500 mb-8 leading-relaxed">
                         Sizning murojaatingiz mutaxassislar tomonidan o'rganilmoqda. Javob xati <strong>{formData.email}</strong> manziliga yuboriladi.
                     </p>
-                    <button 
+                    <button
                         onClick={() => { setStatus('idle'); setFormData({ ...formData, message: '', agree: false }); }}
                         className="w-full bg-gray-900 text-white font-bold py-4 rounded-xl hover:bg-black hover:shadow-lg transition-all duration-300"
                     >
@@ -106,7 +106,7 @@ const Appeals = () => {
     return (
         <div className="bg-[#F8FAFC] min-h-screen py-12 md:py-20 font-sans">
             <div className="container mx-auto px-4 max-w-7xl">
-                
+
                 {/* Header Context */}
                 <div className="text-center mb-16 max-w-3xl mx-auto">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold tracking-widest uppercase mb-6">
@@ -121,42 +121,42 @@ const Appeals = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-                    
+
                     {/* LEFT: THE FORM (Elite UX) */}
                     <div className="lg:col-span-8 bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] p-8 md:p-12 border border-slate-100 relative overflow-hidden">
                         {/* Subtle decorative blob */}
                         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 -mr-20 -mt-20 pointer-events-none"></div>
 
                         <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
-                            
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <InputField 
-                                    label="To'liq ismingiz" 
+                                <InputField
+                                    label="To'liq ismingiz"
                                     name="name"
-                                    icon={<FaUser />} 
-                                    placeholder="Abdullayev Abdulla" 
+                                    icon={<FaUser />}
+                                    placeholder="Abdullayev Abdulla"
                                     required
                                     value={formData.name}
                                     onChange={handleChange}
                                 />
-                                <InputField 
-                                    label="Telefon raqam" 
+                                <InputField
+                                    label="Telefon raqam"
                                     name="phone"
                                     type="tel"
-                                    icon={<FaPhoneAlt />} 
-                                    placeholder="998 90 123 45 67" 
+                                    icon={<FaPhoneAlt />}
+                                    placeholder="998 90 123 45 67"
                                     required
                                     value={formData.phone}
                                     onChange={handlePhoneChange}
                                 />
                             </div>
 
-                            <InputField 
-                                label="Elektron pochta" 
+                            <InputField
+                                label="Elektron pochta"
                                 name="email"
                                 type="email"
-                                icon={<FaEnvelope />} 
-                                placeholder="name@mail.uz" 
+                                icon={<FaEnvelope />}
+                                placeholder="name@mail.uz"
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
@@ -181,17 +181,17 @@ const Appeals = () => {
                                         <option>So'rovnoma</option>
                                     </select>
                                     <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
-                                        <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                                        <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
                                     </div>
                                 </div>
                             </div>
 
-                            <InputField 
-                                label="Murojaat matni" 
+                            <InputField
+                                label="Murojaat matni"
                                 name="message"
                                 type="textarea"
-                                icon={<FaFileAlt className="mt-1" />} 
-                                placeholder="Muammo mazmunini batafsil yozing..." 
+                                icon={<FaFileAlt className="mt-1" />}
+                                placeholder="Muammo mazmunini batafsil yozing..."
                                 rows="5"
                                 required
                                 value={formData.message}
@@ -217,8 +217,8 @@ const Appeals = () => {
                             </div>
 
                             {/* Submit Button with Loading State */}
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 disabled={status === 'loading'}
                                 className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-lg py-4 rounded-2xl hover:shadow-lg hover:shadow-blue-500/30 hover:scale-[1.01] transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
                             >
@@ -237,11 +237,11 @@ const Appeals = () => {
 
                     {/* RIGHT: INFO SIDEBAR (Sticky) */}
                     <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-8">
-                        
+
                         {/* Dark Card */}
                         <div className="bg-[#1E293B] text-white p-8 rounded-[2rem] shadow-xl relative overflow-hidden group">
                             <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-500 rounded-full blur-[60px] opacity-20 group-hover:opacity-30 transition-opacity duration-700"></div>
-                            
+
                             <h4 className="font-bold text-xl mb-6 relative z-10">Murojaat tartibi</h4>
                             <div className="space-y-5 text-sm text-slate-300 relative z-10 leading-relaxed">
                                 <div className="flex gap-4">

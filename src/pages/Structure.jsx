@@ -52,18 +52,18 @@ const DetailModal = ({ node, onClose }) => (
             <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition">
                 <FaTimes />
             </button>
-            
+
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl mb-4 ${node.type === 'boss' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}>
                 {node.type === 'boss' ? <FaUserTie /> : <FaSitemap />}
             </div>
-            
+
             <h3 className="text-xl font-bold text-slate-800 mb-1">{node.title}</h3>
             {node.name && <p className="text-blue-600 font-medium text-sm mb-4">{node.name}</p>}
-            
+
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-slate-600 text-sm leading-relaxed">
                 {node.desc}
             </div>
-            
+
             <div className="mt-6 flex justify-end">
                 <button onClick={onClose} className="px-5 py-2 bg-slate-900 text-white rounded-lg text-sm font-bold hover:bg-slate-800 transition">
                     Yopish
@@ -73,11 +73,12 @@ const DetailModal = ({ node, onClose }) => (
     </div>
 );
 
+const MotionDiv = motion.div;
+
 // Recursive Tree Node (Desktop)
 const TreeNode = ({ node, onSelect }) => {
     const hasChildren = node.children && node.children.length > 0;
-    
-    // Dynamic Styles based on hierarchy
+
     const boxStyles = {
         boss: "bg-slate-900 text-white border-slate-900 shadow-xl shadow-blue-900/20 scale-110 z-10",
         "sub-boss": "bg-white text-slate-800 border-blue-200 hover:border-blue-500 hover:shadow-lg",
@@ -86,12 +87,7 @@ const TreeNode = ({ node, onSelect }) => {
 
     return (
         <li className="relative p-4 flex flex-col items-center">
-            {/* Connector Lines Logic (CSS Magic) */}
-            {/* Note: In a real tree css implementation, the ::before/::after on the LI/UL handles the lines. 
-                For this React component, we use a simplified flex approach or custom CSS classes. 
-                Below is a card representation. */}
-            
-            <motion.div 
+            <MotionDiv
                 whileHover={{ y: -5 }}
                 onClick={() => onSelect(node)}
                 className={`cursor-pointer px-6 py-4 rounded-2xl border-2 transition-all duration-300 min-w-[200px] text-center flex flex-col items-center gap-2 relative group ${boxStyles[node.type]}`}
@@ -103,29 +99,21 @@ const TreeNode = ({ node, onSelect }) => {
                     <div className="font-bold text-sm leading-tight">{node.title}</div>
                     {node.name && <div className="text-[10px] opacity-70 mt-1 font-medium uppercase tracking-wider">{node.name}</div>}
                 </div>
-                
-                {/* Info Icon on Hover */}
+
                 <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <FaInfoCircle className={node.type === 'boss' ? 'text-blue-400' : 'text-blue-500'} />
                 </div>
-            </motion.div>
+            </MotionDiv>
 
             {hasChildren && (
                 <>
-                    {/* Vertical Line Down */}
                     <div className="w-px h-8 bg-gray-300"></div>
-                    
-                    {/* Children Container */}
                     <div className="flex gap-4 pt-4 border-t border-gray-300 relative">
-                        {/* The horizontal bar logic is tricky in flexbox without strict CSS Tree. 
-                            We use a visual trick: a top border on the container. 
-                            For perfect trees, we usually use <ul> <li> structure. */}
-                        {node.children.map((child, idx) => (
-                             <div key={child.id} className="flex flex-col items-center relative">
-                                {/* Vertical Line Up to connect to the horizontal bar */}
+                        {node.children.map((child) => (
+                            <div key={child.id} className="flex flex-col items-center relative">
                                 <div className="absolute -top-4 left-1/2 w-px h-4 bg-gray-300"></div>
                                 <TreeNode node={child} onSelect={onSelect} />
-                             </div>
+                            </div>
                         ))}
                     </div>
                 </>
@@ -141,7 +129,7 @@ const MobileNode = ({ node, onSelect, depth = 0 }) => {
 
     return (
         <div className={`mb-2 select-none ${depth > 0 ? 'ml-4 border-l border-gray-200 pl-4' : ''}`}>
-            <div 
+            <div
                 className={`flex items-center justify-between p-3 rounded-xl border transition-all ${node.type === 'boss' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white border-gray-100 hover:border-blue-200'}`}
                 onClick={() => !hasChildren && onSelect(node)}
             >
@@ -155,10 +143,10 @@ const MobileNode = ({ node, onSelect, depth = 0 }) => {
                     </button>
                 )}
             </div>
-            
+
             <AnimatePresence>
                 {isOpen && hasChildren && (
-                    <motion.div 
+                    <MotionDiv
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
@@ -167,7 +155,7 @@ const MobileNode = ({ node, onSelect, depth = 0 }) => {
                         {node.children.map(child => (
                             <MobileNode key={child.id} node={child} onSelect={onSelect} depth={depth + 1} />
                         ))}
-                    </motion.div>
+                    </MotionDiv>
                 )}
             </AnimatePresence>
         </div>
@@ -182,7 +170,7 @@ const Structure = () => {
     return (
         <div className="bg-[#F8FAFC] min-h-screen py-12 md:py-20 font-sans overflow-x-hidden">
             <div className="container mx-auto px-4 max-w-7xl">
-                
+
                 {/* Header */}
                 <div className="text-center mb-16">
                     <span className="text-blue-600 font-bold tracking-widest uppercase text-xs bg-blue-50 px-3 py-1 rounded-full mb-4 inline-block">

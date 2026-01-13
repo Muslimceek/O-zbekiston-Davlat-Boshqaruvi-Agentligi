@@ -49,7 +49,7 @@ const LEADERS = [
 const Avatar = ({ name, src, size = "large" }) => {
     const initials = name.split(' ').map(n => n[0]).slice(0, 2).join('');
     const sizeClasses = size === "large" ? "w-32 h-32 text-3xl" : "w-24 h-24 text-xl";
-    
+
     return (
         <div className={`relative ${sizeClasses} rounded-full border-4 border-white shadow-xl mx-auto mb-6 overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center text-slate-500 font-bold tracking-widest`}>
             {src ? (
@@ -76,19 +76,19 @@ const LeaderCard = ({ leader }) => {
 
     return (
         <div className={`group relative bg-white rounded-[2rem] overflow-hidden transition-all duration-500 hover:-translate-y-2
-            ${isPrimary 
-                ? 'md:col-span-3 lg:col-span-1 lg:row-span-2 shadow-2xl shadow-blue-900/10 border-t-8 border-blue-600' 
+            ${isPrimary
+                ? 'md:col-span-3 lg:col-span-1 lg:row-span-2 shadow-2xl shadow-blue-900/10 border-t-8 border-blue-600'
                 : 'md:col-span-1 shadow-lg hover:shadow-xl border-t-4 border-gray-200'}`}
         >
             {/* Decorative Background Pattern */}
             <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-gray-50 to-transparent pointer-events-none"></div>
-            
+
             <div className="p-8 relative z-10 flex flex-col h-full">
-                
+
                 {/* Header Profile */}
                 <div className="text-center">
                     <Avatar name={leader.name} src={leader.image} size={isPrimary ? "large" : "medium"} />
-                    
+
                     <h3 className={`font-bold text-slate-800 leading-tight mb-2 group-hover:text-blue-600 transition-colors ${isPrimary ? 'text-2xl' : 'text-xl'}`}>
                         {leader.name}
                     </h3>
@@ -125,8 +125,8 @@ const LeaderCard = ({ leader }) => {
                 {/* Action Button (CTA) */}
                 <div className="mt-8 pt-6 border-t border-gray-100">
                     <button className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95
-                        ${isPrimary 
-                            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/30' 
+                        ${isPrimary
+                            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/30'
                             : 'bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20'}`}
                     >
                         <FaCalendarCheck /> Qabulga yozilish
@@ -143,7 +143,7 @@ const Leadership = () => {
     return (
         <div className="bg-[#F8FAFC] min-h-screen py-16 font-sans">
             <div className="container mx-auto px-4 max-w-6xl">
-                
+
                 {/* HERO TEXT */}
                 <div className="text-center mb-16">
                     <span className="text-blue-600 font-bold tracking-widest uppercase text-xs bg-blue-50 px-3 py-1 rounded-full mb-4 inline-block">
@@ -159,7 +159,7 @@ const Leadership = () => {
 
                 {/* GRID SYSTEM: 1 (Boss) + 2 (Deputies) Layout */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-                    
+
                     {/* The Director (Takes center stage logic or simply mapped first) */}
                     {LEADERS.map((leader) => (
                         <LeaderCard key={leader.id} leader={leader} />
