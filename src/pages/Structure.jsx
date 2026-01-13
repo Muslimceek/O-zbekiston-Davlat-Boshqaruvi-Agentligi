@@ -1,92 +1,222 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FaUserTie, FaSitemap, FaChevronDown, FaChevronRight, FaBuilding, FaTimes, FaInfoCircle } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// --- 1. DATA STRUCTURE (Recursive & Scalable) ---
+const ORG_DATA = {
+    id: 'root',
+    title: "Agentlik Direktori",
+    name: "Abdullayev Anvar",
+    type: "boss",
+    desc: "Agentlik faoliyatiga umumiy rahbarlik qiladi va davlat siyosatini belgilaydi.",
+    children: [
+        {
+            id: 'deputy-1',
+            title: "Birinchi O'rinbosar",
+            type: "sub-boss",
+            desc: "Strategik rejalashtirish va moliya masalalari bo'yicha mas'ul.",
+            children: [
+                { id: 'dept-1', title: "Moliya va Iqtisodiyot", type: "dept", desc: "Budjetni shakllantirish, moliyaviy oqimlarni nazorat qilish va iqtisodiy tahlil." },
+                { id: 'dept-2', title: "Investitsiyalar", type: "dept", desc: "Xorijiy investitsiyalarni jalb etish va grant loyihalari bilan ishlash." }
+            ]
+        },
+        {
+            id: 'deputy-2',
+            title: "Raqamlashtirish Bo'yicha O'rinbosar",
+            type: "sub-boss",
+            desc: "Axborot texnologiyalarini joriy etish va kiberxavfsizlik.",
+            children: [
+                { id: 'dept-3', title: "AKT Rivojlantirish", type: "dept", desc: "Dasturiy mahsulotlarni yaratish va server infratuzilmasini boshqarish." },
+                { id: 'dept-4', title: "Axborot Xavfsizligi", type: "dept", desc: "Tizimlarni tashqi va ichki tahdidlardan himoya qilish." }
+            ]
+        },
+        {
+            id: 'deputy-3',
+            title: "Kadrlar Bo'yicha O'rinbosar",
+            type: "sub-boss",
+            desc: "HR siyosati va davlat xizmatchilari malakasini oshirish.",
+            children: [
+                { id: 'dept-5', title: "Kadrlar Siyosati", type: "dept", desc: "Davlat xizmatchilarini tanlash, baholash va rotatsiya qilish tizimi." },
+                { id: 'dept-6', title: "Yuridik Xizmat", type: "dept", desc: "Agentlik faoliyatining qonuniyligini ta'minlash." }
+            ]
+        }
+    ]
+};
+
+// --- 2. SUB-COMPONENTS ---
+
+// Modal for Details
+const DetailModal = ({ node, onClose }) => (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative animate-scale-in border border-gray-100">
+            <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition">
+                <FaTimes />
+            </button>
+            
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl mb-4 ${node.type === 'boss' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}>
+                {node.type === 'boss' ? <FaUserTie /> : <FaSitemap />}
+            </div>
+            
+            <h3 className="text-xl font-bold text-slate-800 mb-1">{node.title}</h3>
+            {node.name && <p className="text-blue-600 font-medium text-sm mb-4">{node.name}</p>}
+            
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-slate-600 text-sm leading-relaxed">
+                {node.desc}
+            </div>
+            
+            <div className="mt-6 flex justify-end">
+                <button onClick={onClose} className="px-5 py-2 bg-slate-900 text-white rounded-lg text-sm font-bold hover:bg-slate-800 transition">
+                    Yopish
+                </button>
+            </div>
+        </div>
+    </div>
+);
+
+// Recursive Tree Node (Desktop)
+const TreeNode = ({ node, onSelect }) => {
+    const hasChildren = node.children && node.children.length > 0;
+    
+    // Dynamic Styles based on hierarchy
+    const boxStyles = {
+        boss: "bg-slate-900 text-white border-slate-900 shadow-xl shadow-blue-900/20 scale-110 z-10",
+        "sub-boss": "bg-white text-slate-800 border-blue-200 hover:border-blue-500 hover:shadow-lg",
+        dept: "bg-white text-slate-600 border-gray-100 hover:border-blue-400 border-dashed hover:border-solid"
+    };
+
+    return (
+        <li className="relative p-4 flex flex-col items-center">
+            {/* Connector Lines Logic (CSS Magic) */}
+            {/* Note: In a real tree css implementation, the ::before/::after on the LI/UL handles the lines. 
+                For this React component, we use a simplified flex approach or custom CSS classes. 
+                Below is a card representation. */}
+            
+            <motion.div 
+                whileHover={{ y: -5 }}
+                onClick={() => onSelect(node)}
+                className={`cursor-pointer px-6 py-4 rounded-2xl border-2 transition-all duration-300 min-w-[200px] text-center flex flex-col items-center gap-2 relative group ${boxStyles[node.type]}`}
+            >
+                <div className="text-2xl opacity-80">
+                    {node.type === 'boss' ? <FaUserTie /> : <FaBuilding />}
+                </div>
+                <div>
+                    <div className="font-bold text-sm leading-tight">{node.title}</div>
+                    {node.name && <div className="text-[10px] opacity-70 mt-1 font-medium uppercase tracking-wider">{node.name}</div>}
+                </div>
+                
+                {/* Info Icon on Hover */}
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <FaInfoCircle className={node.type === 'boss' ? 'text-blue-400' : 'text-blue-500'} />
+                </div>
+            </motion.div>
+
+            {hasChildren && (
+                <>
+                    {/* Vertical Line Down */}
+                    <div className="w-px h-8 bg-gray-300"></div>
+                    
+                    {/* Children Container */}
+                    <div className="flex gap-4 pt-4 border-t border-gray-300 relative">
+                        {/* The horizontal bar logic is tricky in flexbox without strict CSS Tree. 
+                            We use a visual trick: a top border on the container. 
+                            For perfect trees, we usually use <ul> <li> structure. */}
+                        {node.children.map((child, idx) => (
+                             <div key={child.id} className="flex flex-col items-center relative">
+                                {/* Vertical Line Up to connect to the horizontal bar */}
+                                <div className="absolute -top-4 left-1/2 w-px h-4 bg-gray-300"></div>
+                                <TreeNode node={child} onSelect={onSelect} />
+                             </div>
+                        ))}
+                    </div>
+                </>
+            )}
+        </li>
+    );
+};
+
+// Mobile Accordion Node
+const MobileNode = ({ node, onSelect, depth = 0 }) => {
+    const [isOpen, setIsOpen] = useState(true);
+    const hasChildren = node.children && node.children.length > 0;
+
+    return (
+        <div className={`mb-2 select-none ${depth > 0 ? 'ml-4 border-l border-gray-200 pl-4' : ''}`}>
+            <div 
+                className={`flex items-center justify-between p-3 rounded-xl border transition-all ${node.type === 'boss' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white border-gray-100 hover:border-blue-200'}`}
+                onClick={() => !hasChildren && onSelect(node)}
+            >
+                <div className="flex items-center gap-3" onClick={() => onSelect(node)}>
+                    <span className="opacity-70">{node.type === 'boss' ? <FaUserTie /> : <FaBuilding />}</span>
+                    <span className="font-bold text-sm">{node.title}</span>
+                </div>
+                {hasChildren && (
+                    <button onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }} className="p-1 opacity-60 hover:opacity-100">
+                        <FaChevronDown className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                )}
+            </div>
+            
+            <AnimatePresence>
+                {isOpen && hasChildren && (
+                    <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden pt-2"
+                    >
+                        {node.children.map(child => (
+                            <MobileNode key={child.id} node={child} onSelect={onSelect} depth={depth + 1} />
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
+// --- 3. MAIN COMPONENT ---
 
 const Structure = () => {
-    // Reusing the visual logic from HTML but with Tailwind
+    const [selectedNode, setSelectedNode] = useState(null);
+
     return (
-        <div className="container mx-auto px-4 py-12">
-            <h2 className="text-3xl font-bold text-secondary mb-12 text-center border-b-2 border-primary inline-block pb-2">Tashkiliy Tuzilma</h2>
-
-            <div className="flex flex-col items-center">
-                {/* Director */}
-                <div className="bg-secondary text-white py-4 px-8 rounded shadow-md font-bold mb-8 w-64 text-center relative after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:w-0.5 after:h-8 after:bg-primary">
-                    Agentlik Direktori
+        <div className="bg-[#F8FAFC] min-h-screen py-12 md:py-20 font-sans overflow-x-hidden">
+            <div className="container mx-auto px-4 max-w-7xl">
+                
+                {/* Header */}
+                <div className="text-center mb-16">
+                    <span className="text-blue-600 font-bold tracking-widest uppercase text-xs bg-blue-50 px-3 py-1 rounded-full mb-4 inline-block">
+                        Ierarxiya
+                    </span>
+                    <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+                        Tashkiliy <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Tuzilma</span>
+                    </h2>
                 </div>
 
-                {/* Second Row */}
-                <div className="flex flex-wrap justify-center gap-8 relative before:content-[''] before:absolute before:-top-8 before:w-4/5 before:h-0.5 before:bg-primary">
-
-                    <div className="flex flex-col items-center relative after:content-[''] after:absolute after:-top-8 after:left-1/2 after:-translate-x-1/2 after:w-0.5 after:h-8 after:bg-primary">
-                        <div className="bg-white border-2 border-primary py-3 px-6 rounded font-semibold w-64 text-center mb-8 relative after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:w-0.5 after:h-8 after:bg-primary">
-                            Birinchi O'rinbosar
-                        </div>
-                        <div className="bg-white border border-gray-300 py-3 px-6 rounded w-64 text-center shadow-sm">
-                            Moliya va Iqtisodiyot Bo'limi
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col items-center relative after:content-[''] after:absolute after:-top-8 after:left-1/2 after:-translate-x-1/2 after:w-0.5 after:h-8 after:bg-primary">
-                        <div className="bg-white border-2 border-primary py-3 px-6 rounded font-semibold w-64 text-center mb-8 relative after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:w-0.5 after:h-8 after:bg-primary">
-                            O'rinbosar
-                        </div>
-                        <div className="bg-white border border-gray-300 py-3 px-6 rounded w-64 text-center shadow-sm">
-                            Kadrlar Siyosati Bo'limi
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col items-center relative after:content-[''] after:absolute after:-top-8 after:left-1/2 after:-translate-x-1/2 after:w-0.5 after:h-8 after:bg-primary">
-                        <div className="bg-white border-2 border-primary py-3 px-6 rounded font-semibold w-64 text-center mb-8 relative after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:w-0.5 after:h-8 after:bg-primary">
-                            O'rinbosar
-                        </div>
-                        <div className="bg-white border border-gray-300 py-3 px-6 rounded w-64 text-center shadow-sm">
-                            AKT Rivojlantirish Bo'limi
-                        </div>
-                    </div>
-
+                {/* DESKTOP VIEW (Tree) - Hidden on Mobile */}
+                <div className="hidden lg:flex justify-center overflow-x-auto pb-12 custom-scrollbar">
+                    <ul className="flex flex-col items-center min-w-max">
+                        <TreeNode node={ORG_DATA} onSelect={setSelectedNode} />
+                    </ul>
                 </div>
 
-                {/* Connector to Departments */}
-                <div className="h-8 w-0.5 bg-primary mt-4"></div>
-                <div className="w-4/5 h-0.5 bg-primary"></div>
-                <div className="h-4 w-full"></div> {/* Spacer */}
+                {/* MOBILE VIEW (Accordion) - Hidden on Desktop */}
+                <div className="lg:hidden max-w-md mx-auto bg-white p-6 rounded-[2rem] shadow-xl shadow-gray-100/50 border border-gray-100">
+                    <h4 className="text-sm font-bold text-gray-400 uppercase mb-4 tracking-wider">Bo'limlar ro'yxati</h4>
+                    <MobileNode node={ORG_DATA} onSelect={setSelectedNode} />
+                </div>
 
-                {/* Third Row - Departments */}
-                <div className="flex flex-wrap justify-center gap-4 mt-4">
-                    {['Yuridik Xizmat', 'Xalqaro Aloqalar Bo\'limi', 'Matbuot Xizmati', 'Ijro Nazorati Bo\'limi', 'Murojaatlar Bilan Ishlash'].map((dept, i) => (
-                        <div key={i} className="bg-white border border-gray-300 py-2 px-4 rounded shadow-sm text-sm font-medium relative before:content-[''] before:absolute before:-top-5 before:left-1/2 before:-translate-x-1/2 before:w-0.5 before:h-5 before:bg-primary">
-                            {dept}
-                        </div>
-                    ))}
+                {/* Instructions */}
+                <div className="text-center mt-8 text-xs text-gray-400">
+                    * Batafsil ma'lumot olish uchun bo'lim ustiga bosing
                 </div>
 
             </div>
 
-            <div className="mt-16 bg-white p-6 rounded shadow-sm">
-                <h3 className="text-xl font-bold mb-4 text-secondary">Asosiy vazifalar taqsimoti</h3>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-light-bg text-secondary">
-                                <th className="p-4 border-b">Bo'lim nomi</th>
-                                <th className="p-4 border-b">Asosiy vazifasi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td className="p-4 border-b">Moliya va Iqtisodiyot Bo'limi</td>
-                                <td className="p-4 border-b">Agentlikning moliyaviy faoliyatini rejalashtirish va hisobotlarni yuritish.</td>
-                            </tr>
-                            <tr>
-                                <td className="p-4 border-b">Kadrlar Siyosati Bo'limi</td>
-                                <td className="p-4 border-b">Davlat xizmatchilari tanlovini tashkil etish va malakasini oshirish.</td>
-                            </tr>
-                            <tr>
-                                <td className="p-4 border-b">AKT Rivojlantirish Bo'limi</td>
-                                <td className="p-4 border-b">Raqamli texnologiyalarni joriy etish va axborot xavfsizligini ta'minlash.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {/* Detail Modal */}
+            {selectedNode && (
+                <DetailModal node={selectedNode} onClose={() => setSelectedNode(null)} />
+            )}
         </div>
     );
 };
